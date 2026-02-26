@@ -1,0 +1,34 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Restful-Booker Regression Suite" verbose="1" parallel="false">
+
+    <test name="Home Page Tests">
+        <classes>
+            <class name="com.restfulbooker.tests.HomePageTest"/>
+        </classes>
+    </test>
+
+    <test name="Contact Form Tests">
+        <classes>
+            <class name="com.restfulbooker.tests.ContactFormTest"/>
+        </classes>
+    </test>
+
+    <test name="Admin Login Tests">
+        <classes>
+            <class name="com.restfulbooker.tests.AdminLoginTest"/>
+        </classes>
+    </test>
+
+    <test name="Admin Room Tests">
+        <classes>
+            <class name="com.restfulbooker.tests.AdminRoomTest"/>
+        </classes>
+    </test>
+
+    <test name="Navigation Tests">
+        <classes>
+            <class name="com.restfulbooker.tests.NavigationTest"/>
+        </classes>
+    </test>
+
+</suite>
