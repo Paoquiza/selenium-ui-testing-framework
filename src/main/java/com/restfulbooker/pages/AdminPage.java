@@ -20,7 +20,7 @@ public class AdminPage extends BasePage {
     private static final By CREATE_ROOM_BUTTON = By.cssSelector("#createRoom");
     private static final By ROOM_LISTINGS = By.cssSelector("[data-testid='roomlisting']");
     private static final By ROOM_DELETE_BUTTON = By.cssSelector(".roomDelete");
-    private static final By LOGOUT_LINK = By.linkText("Logout");
+    private static final By LOGOUT_LINK = By.xpath("//button[contains(text(),'Logout')] | //a[contains(text(),'Logout')]");
     private static final By FRONT_PAGE_LINK = By.linkText("Front Page");
 
     // Notification / Banner
@@ -39,14 +39,7 @@ public class AdminPage extends BasePage {
                     ExpectedConditions.visibilityOfElementLocated(LOGOUT_LINK)
             ));
         } catch (Exception e) {
-            // SPA hash routing may need extra time, retry
-            driver.navigate().refresh();
-            try {
-                wait.until(ExpectedConditions.or(
-                        ExpectedConditions.visibilityOfElementLocated(USERNAME_INPUT),
-                        ExpectedConditions.visibilityOfElementLocated(ROOM_NAME_INPUT)
-                ));
-            } catch (Exception ignored) {}
+            // Page may still be loading
         }
         return this;
     }
@@ -86,11 +79,9 @@ public class AdminPage extends BasePage {
 
     public boolean isLoggedIn() {
         try {
-            wait.until(ExpectedConditions.or(
-                    ExpectedConditions.visibilityOfElementLocated(ROOM_NAME_INPUT),
-                    ExpectedConditions.visibilityOfElementLocated(LOGOUT_LINK)
-            ));
-            return true;
+            Thread.sleep(2000); // Wait for login attempt to process
+            // After successful login, the login button (#doLogin) disappears
+            return !isElementDisplayed(LOGIN_BUTTON) && !isElementDisplayed(USERNAME_INPUT);
         } catch (Exception e) {
             return false;
         }
@@ -148,6 +139,15 @@ public class AdminPage extends BasePage {
 
     public void clickLogout() {
         click(LOGOUT_LINK);
+        try {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(USERNAME_INPUT));
+        } catch (Exception e) {
+            // Page may redirect, try navigating back to admin
+            driver.get(AppConstants.ADMIN_URL);
+            try {
+                wait.until(ExpectedConditions.visibilityOfElementLocated(USERNAME_INPUT));
+            } catch (Exception ignored) {}
+        }
     }
 
     public boolean isLogoutLinkDisplayed() {

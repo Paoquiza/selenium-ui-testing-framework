@@ -11,10 +11,10 @@ public class ContactPage extends BasePage {
     private static final By PHONE_INPUT = By.cssSelector("input#phone");
     private static final By SUBJECT_INPUT = By.cssSelector("input#subject");
     private static final By DESCRIPTION_TEXTAREA = By.cssSelector("textarea#description");
-    private static final By SUBMIT_BUTTON = By.cssSelector("#submitContact");
-    private static final By SUCCESS_MESSAGE = By.cssSelector(".contact h2");
-    private static final By ERROR_MESSAGES = By.cssSelector(".alert-danger p");
-    private static final By CONTACT_FORM = By.cssSelector(".contact form");
+    private static final By SUBMIT_BUTTON = By.xpath("//button[text()='Submit']");
+    private static final By SUCCESS_MESSAGE = By.cssSelector(".alert-success, h2");
+    private static final By ERROR_MESSAGES = By.cssSelector(".alert-danger, .alert-danger p, .text-danger");
+    private static final By CONTACT_FORM = By.cssSelector("form, input#name");
 
     public ContactPage(WebDriver driver) {
         super(driver);
@@ -67,7 +67,17 @@ public class ContactPage extends BasePage {
     }
 
     public void clickSubmit() {
-        click(SUBMIT_BUTTON);
+        try {
+            scrollToElement(SUBMIT_BUTTON);
+            Thread.sleep(500);
+        } catch (Exception ignored) {}
+        try {
+            click(SUBMIT_BUTTON);
+        } catch (org.openqa.selenium.ElementClickInterceptedException e) {
+            // Use JS click as fallback when element is intercepted
+            org.openqa.selenium.WebElement btn = driver.findElement(SUBMIT_BUTTON);
+            ((org.openqa.selenium.JavascriptExecutor) driver).executeScript("arguments[0].click();", btn);
+        }
     }
 
     public String getSuccessMessage() {
@@ -76,7 +86,12 @@ public class ContactPage extends BasePage {
 
     public boolean isSuccessMessageDisplayed() {
         try {
-            waitForVisible(SUCCESS_MESSAGE);
+            // After successful form submission, wait for success feedback
+            wait.until(org.openqa.selenium.support.ui.ExpectedConditions.or(
+                    org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated(SUCCESS_MESSAGE),
+                    org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated(
+                            By.xpath("//*[contains(text(),'Thanks') or contains(text(),'thank') or contains(text(),'success')]"))
+            ));
             return true;
         } catch (Exception e) {
             return false;

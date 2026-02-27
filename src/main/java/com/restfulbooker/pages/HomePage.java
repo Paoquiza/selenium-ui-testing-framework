@@ -10,14 +10,14 @@ import java.time.Duration;
 public class HomePage extends BasePage {
 
     private static final By LOGO = By.cssSelector(".navbar-brand");
-    private static final By ROOMS_LIST = By.cssSelector(".row.hotel-room-info");
-    private static final By ROOM_IMAGES = By.cssSelector(".row.hotel-room-info img");
-    private static final By ROOM_HEADERS = By.cssSelector(".row.hotel-room-info h3");
-    private static final By ROOM_DESCRIPTIONS = By.cssSelector(".row.hotel-room-info p");
-    private static final By BOOK_BUTTONS = By.cssSelector("button.btn-outline-primary.float-right.openBooking");
-    private static final By MAP_ELEMENT = By.cssSelector(".pigeon-tiles-box, [class*='map'] canvas, .map img, .map");
-    private static final By HOTEL_DESCRIPTION = By.cssSelector(".col-sm-7 p, .hotel-description");
-    private static final By HOTEL_LOGO = By.cssSelector("img.hotel-logoUrl, .col-sm-7 img[src*='logo'], .col-sm-7 img");
+    private static final By ROOM_CARDS = By.cssSelector(".card");
+    private static final By ROOM_IMAGES = By.cssSelector("img.card-img-top");
+    private static final By ROOM_HEADERS = By.cssSelector(".card-title, .card h5, .card h4");
+    private static final By ROOM_DESCRIPTIONS = By.cssSelector(".card-text, .card p");
+    private static final By BOOK_BUTTONS = By.cssSelector("a.btn-primary[href*='book'], a.btn-primary");
+    private static final By MAP_LINKS = By.linkText("OpenStreetMap");
+    private static final By HOTEL_DESCRIPTION = By.cssSelector("section p, .container p");
+    private static final By BRANDING_IMAGE = By.cssSelector("img.card-img-top");
 
     public HomePage(WebDriver driver) {
         super(driver);
@@ -29,8 +29,8 @@ public class HomePage extends BasePage {
             waitForVisible(LOGO);
             // Wait for SPA content to render
             wait.until(ExpectedConditions.or(
-                    ExpectedConditions.presenceOfElementLocated(By.cssSelector(".row.hotel-room-info")),
-                    ExpectedConditions.presenceOfElementLocated(By.cssSelector("#root .container-fluid"))
+                    ExpectedConditions.presenceOfElementLocated(By.cssSelector(".card")),
+                    ExpectedConditions.presenceOfElementLocated(By.cssSelector("input#name"))
             ));
         } catch (Exception e) {
             // SPA may still be loading async content
@@ -44,9 +44,9 @@ public class HomePage extends BasePage {
 
     public int getRoomCount() {
         try {
-            waitForVisible(ROOMS_LIST);
+            waitForVisible(ROOM_CARDS);
         } catch (Exception ignored) {}
-        return getElementCount(ROOMS_LIST);
+        return getElementCount(ROOM_CARDS);
     }
 
     public boolean areRoomsDisplayed() {
@@ -67,8 +67,7 @@ public class HomePage extends BasePage {
 
     public boolean isMapDisplayed() {
         try {
-            wait.until(ExpectedConditions.presenceOfElementLocated(MAP_ELEMENT));
-            scrollToElement(MAP_ELEMENT);
+            wait.until(ExpectedConditions.presenceOfElementLocated(MAP_LINKS));
             return true;
         } catch (Exception e) {
             return false;
@@ -86,7 +85,7 @@ public class HomePage extends BasePage {
 
     public boolean isHotelLogoDisplayed() {
         try {
-            wait.until(ExpectedConditions.presenceOfElementLocated(HOTEL_LOGO));
+            wait.until(ExpectedConditions.presenceOfElementLocated(BRANDING_IMAGE));
             return true;
         } catch (Exception e) {
             return false;

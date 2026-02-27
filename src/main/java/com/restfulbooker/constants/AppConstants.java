@@ -6,7 +6,7 @@ public final class AppConstants {
     }
 
     public static final String BASE_URL = "https://automationintesting.online/";
-    public static final String ADMIN_URL = "https://automationintesting.online/#/admin";
+    public static final String ADMIN_URL = "https://automationintesting.online/admin";
 
     public static final String ADMIN_USERNAME = "admin";
     public static final String ADMIN_PASSWORD = "password";
