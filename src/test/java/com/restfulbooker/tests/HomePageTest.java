@@ -20,7 +20,7 @@ public class HomePageTest extends BaseTest {
         Assert.assertTrue(homePage.isLogoDisplayed(), "Logo should be displayed on home page");
     }
 
-    @Test(groups = {"smoke", "regression"}, description = "Verify hotel logo is displayed")
+    @Test(groups = {"regression"}, description = "Verify hotel logo is displayed")
     public void testHotelLogoDisplayed() {
         Assert.assertTrue(homePage.isHotelLogoDisplayed(), "Hotel logo should be displayed");
     }

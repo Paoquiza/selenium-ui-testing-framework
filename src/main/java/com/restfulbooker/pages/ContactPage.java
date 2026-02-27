@@ -22,7 +22,12 @@ public class ContactPage extends BasePage {
 
     public ContactPage open() {
         driver.get(AppConstants.BASE_URL);
-        scrollToElement(CONTACT_FORM);
+        try {
+            waitForVisible(NAME_INPUT);
+            scrollToElement(NAME_INPUT);
+        } catch (Exception e) {
+            // SPA may still be loading, continue
+        }
         return this;
     }
 
@@ -87,7 +92,12 @@ public class ContactPage extends BasePage {
     }
 
     public boolean isContactFormDisplayed() {
-        return isElementDisplayed(CONTACT_FORM);
+        try {
+            waitForVisible(NAME_INPUT);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public boolean isSubmitButtonDisplayed() {

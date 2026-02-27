@@ -32,6 +32,22 @@ public class AdminPage extends BasePage {
 
     public AdminPage openAdminPanel() {
         driver.get(AppConstants.ADMIN_URL);
+        try {
+            wait.until(ExpectedConditions.or(
+                    ExpectedConditions.visibilityOfElementLocated(USERNAME_INPUT),
+                    ExpectedConditions.visibilityOfElementLocated(ROOM_NAME_INPUT),
+                    ExpectedConditions.visibilityOfElementLocated(LOGOUT_LINK)
+            ));
+        } catch (Exception e) {
+            // SPA hash routing may need extra time, retry
+            driver.navigate().refresh();
+            try {
+                wait.until(ExpectedConditions.or(
+                        ExpectedConditions.visibilityOfElementLocated(USERNAME_INPUT),
+                        ExpectedConditions.visibilityOfElementLocated(ROOM_NAME_INPUT)
+                ));
+            } catch (Exception ignored) {}
+        }
         return this;
     }
 
